@@ -1,12 +1,14 @@
 
 package ubc.cosc322;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import sfs2x.client.entities.Room;
 import ygraph.ai.smartfox.games.BaseGameGUI;
 import ygraph.ai.smartfox.games.GameClient;
+import ygraph.ai.smartfox.games.GameMessage;
 import ygraph.ai.smartfox.games.GamePlayer;
 
 /**
@@ -55,17 +57,28 @@ public class COSC322Test extends GamePlayer{
     	
     	//To make a GUI-based player, create an instance of BaseGameGUI
     	//and implement the method getGameGUI() accordingly
-    	//this.gamegui = new BaseGameGUI(this);
+    	this.gamegui = new BaseGameGUI(this);
     }
  
 
 
     @Override
     public void onLogin() {
+    	List<Room> roomlist = gameClient.getRoomList();
+    	System.out.println("List of rooms: " + roomlist);
+    	String roomtojoin = roomlist.get(1).toString();
+    	System.out.println("Joining room: " + roomtojoin);
+    	gameClient.joinRoom(roomtojoin);
     	System.out.println("Congratualations!!! "
     			+ "I am called because the server indicated that the login is successfully");
     	System.out.println("The next step is to find a room and join it: "
     			+ "the gameClient instance created in my constructor knows how!"); 
+    	System.out.println();
+    	
+    	userName = gameClient.getUserName();
+    	if(gamegui != null) {
+    	gamegui.setRoomInformation(gameClient.getRoomList());
+    	}
     }
 
     @Override
@@ -75,6 +88,15 @@ public class COSC322Test extends GamePlayer{
 	
     	//For a detailed description of the message types and format, 
     	//see the method GamePlayer.handleGameMessage() in the game-client-api document. 
+    	System.out.println(msgDetails);
+    	
+    	if (messageType == GameMessage.GAME_STATE_BOARD) {
+    		ArrayList<Integer> gameS = (ArrayList<Integer>)msgDetails.get("GAME_STATE");
+    		gamegui.setGameState(gameS);
+    	} else if (messageType == GameMessage.GAME_ACTION_MOVE) {
+    		gamegui.updateGameState(msgDetails);
+    	}
+    	//BaseGameGui.updateGaemState(...)
     	    	
     	return true;   	
     }
@@ -94,7 +116,7 @@ public class COSC322Test extends GamePlayer{
 	@Override
 	public BaseGameGUI getGameGUI() {
 		// TODO Auto-generated method stub
-		return  null;
+		return  this.gamegui;
 	}
 
 	@Override
