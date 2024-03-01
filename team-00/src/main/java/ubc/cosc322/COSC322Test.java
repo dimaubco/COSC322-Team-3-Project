@@ -10,6 +10,7 @@ import ygraph.ai.smartfox.games.BaseGameGUI;
 import ygraph.ai.smartfox.games.GameClient;
 import ygraph.ai.smartfox.games.GameMessage;
 import ygraph.ai.smartfox.games.GamePlayer;
+import ygraph.ai.smartfox.games.amazons.HumanPlayer;
 
 /**
  * An example illustrating how to implement a GamePlayer
@@ -31,7 +32,8 @@ public class COSC322Test extends GamePlayer{
      * @param args for name and passwd (current, any string would work)
      */
     public static void main(String[] args) {				 
-    	COSC322Test player = new COSC322Test(args[0], args[1]);
+//    	COSC322Test player = new COSC322Test(args[0], args[1]);
+    	HumanPlayer player = new HumanPlayer();
     	
     	if(player.getGameGUI() == null) {
     		player.Go();
@@ -58,6 +60,7 @@ public class COSC322Test extends GamePlayer{
     	//To make a GUI-based player, create an instance of BaseGameGUI
     	//and implement the method getGameGUI() accordingly
     	this.gamegui = new BaseGameGUI(this);
+    	
     }
  
 
@@ -96,7 +99,6 @@ public class COSC322Test extends GamePlayer{
     	} else if (messageType == GameMessage.GAME_ACTION_MOVE) {
     		gamegui.updateGameState(msgDetails);
     	}
-    	//BaseGameGui.updateGaemState(...)
     	    	
     	return true;   	
     }
