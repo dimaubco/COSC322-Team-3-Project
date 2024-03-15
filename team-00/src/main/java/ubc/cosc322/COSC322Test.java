@@ -111,6 +111,7 @@ public class COSC322Test extends GamePlayer{
 	        	break;
 	        	
     		case GameMessage.GAME_ACTION_START:
+    			
     			String BLACK = (String) msgDetails.get(AmazonsGameMessage.PLAYER_BLACK);
     			String WHITE = (String) msgDetails.get(AmazonsGameMessage.PLAYER_WHITE);
     			System.out.println("Black: " + BLACK + "   White: " + WHITE);
@@ -131,6 +132,7 @@ public class COSC322Test extends GamePlayer{
 	    		int enemyArrowY = OponnentArrowPos.get(1);
 	    		
 	    		gameBoard.updateGameBoard(enemyCurrX, enemyCurrY, enemyNewX, enemyNewY, enemyArrowX, enemyArrowY);
+	    		gameBoard.printGameBoard(); 
 	    		
 	    		break;
     	}

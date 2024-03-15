@@ -26,7 +26,7 @@ public class GBoard{
 		}
 	}
 	
-	private boolean isLegal(playerMove move) {
+	public boolean isLegal(playerMove move) {
 		
 		if(!isInsideBoard(move.getInitX(), move.getInitY())){ // check if initial position is inside board.
 			return false;
@@ -46,12 +46,12 @@ public class GBoard{
 		
 	}
 	
-	private boolean isInsideBoard (int x, int y){
+	public boolean isInsideBoard (int x, int y){
 		return x>=0 && x<10 && y>=0 && y<10;
 		
 	}
 	
-	private boolean isClear(int initX, int initY, int newX, int newY) {
+	public boolean isClear(int initX, int initY, int newX, int newY) {
 		int deltaX = newX - initX;
 		int deltaY = newY - initY;
 		
