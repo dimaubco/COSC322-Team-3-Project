@@ -38,11 +38,12 @@ public class GBoard{
 			return false;
 		}
 		
+		if(move.getInitX() == move.getNewX() && move.getInitY() == move.getNewY()) { // check if initial and final position if the same.
+			return false;
+		}
 		
+		return isClear(move.getInitX(), move.getInitY(), move.getNewX(), move.getNewY());
 		
-		
-		
-		return true;
 	}
 	
 	private boolean isInsideBoard (int x, int y){
@@ -50,7 +51,7 @@ public class GBoard{
 		
 	}
 	
-	private boolean isClear(int initX, int initY, int newX, int newY, boolean queenMove) {
+	private boolean isClear(int initX, int initY, int newX, int newY) {
 		int deltaX = newX - initX;
 		int deltaY = newY - initY;
 		
@@ -75,7 +76,7 @@ public class GBoard{
 			y += stepY;
 		}
 		
-		if (gboard[newX][newY] != blank && queenMove) { // check if final position is empty.
+		if (gboard[newX][newY] != blank) { // check if final position is empty.
 			return false;
 		}
 		

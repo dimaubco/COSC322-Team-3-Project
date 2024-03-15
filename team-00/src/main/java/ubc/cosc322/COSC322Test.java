@@ -27,7 +27,7 @@ public class COSC322Test extends GamePlayer{
     private String userName = null;
     private String passwd = null;
     
-    private int[][] gameBoard = new int[10][10];
+    private GBoard gameBoard;
     
 	
     /**
@@ -104,7 +104,10 @@ public class COSC322Test extends GamePlayer{
     		case GameMessage.GAME_STATE_BOARD:
 	    		ArrayList<Integer> gameS = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE);
 	        	gamegui.setGameState(gameS);
-	        	System.out.println("GameBoard is Set");
+	        	gameBoard = new GBoard(gameS);
+	        	gameBoard.setGameBoard(gameS);
+	        	System.out.println("GameBoard is Set!");
+	        	gameBoard.printGameBoard();
 	        	break;
 	        	
     		case GameMessage.GAME_ACTION_START:
