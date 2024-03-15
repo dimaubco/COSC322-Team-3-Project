@@ -119,14 +119,18 @@ public class COSC322Test extends GamePlayer{
         	
     		case GameMessage.GAME_ACTION_MOVE:
 	    		gamegui.updateGameState(msgDetails);
-	    		
-	    		
 	    		ArrayList<Integer> OponnentQueenCurrPos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR); 
 	    		ArrayList<Integer> OponnentQueenNextPos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_NEXT);
 	    		ArrayList<Integer> OponnentArrowPos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS);
 	    		
+	    		int enemyCurrX = OponnentQueenCurrPos.get(0);
+	    		int enemyCurrY = OponnentQueenCurrPos.get(1);
+	    		int enemyNewX = OponnentQueenNextPos.get(0);
+	    		int enemyNewY = OponnentQueenNextPos.get(1);
+	    		int enemyArrowX = OponnentArrowPos.get(0);
+	    		int enemyArrowY = OponnentArrowPos.get(1);
 	    		
-	    		
+	    		gameBoard.updateGameBoard(enemyCurrX, enemyCurrY, enemyNewX, enemyNewY, enemyArrowX, enemyArrowY);
 	    		
 	    		break;
     	}

@@ -92,6 +92,11 @@ public class GBoard{
     		}
     	}
     }
+	
+	public void updateGameBoard(int currX, int currY, int nextX, int nextY, int arrX, int arrY) {
+		gboard[nextX][nextY] = gboard[currX][currY];
+		gboard[currX][currY] = blank;
+	}
     
     public void printGameBoard() {
         System.out.println("Game Board:");
