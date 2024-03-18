@@ -2,6 +2,7 @@
 package ubc.cosc322;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,8 @@ public class COSC322Test extends GamePlayer{
     private String passwd = null;
     
     private GBoard gameBoard;
+    private playerBrain brain;
+    int playerId = 0;
     
 	
     /**
@@ -63,12 +66,7 @@ public class COSC322Test extends GamePlayer{
     	//To make a GUI-based player, create an instance of BaseGameGUI
     	//and implement the method getGameGUI() accordingly
     	this.gamegui = new BaseGameGUI(this);
-    	
     }
-    
-
-
-
 
     @Override
     public void onLogin() {
@@ -103,10 +101,12 @@ public class COSC322Test extends GamePlayer{
     	switch (messageType) {
     		case GameMessage.GAME_STATE_BOARD:
 	    		ArrayList<Integer> gameS = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE);
-	        	gamegui.setGameState(gameS);
+	    		gamegui.setGameState(gameS);
 	        	gameBoard = new GBoard(gameS);
 	        	gameBoard.setGameBoard(gameS);
 	        	System.out.println("GameBoard is Set!");
+	        	this.brain = new playerBrain(this.gameBoard);
+	        	System.out.println("Brain is Set!");
 	        	gameBoard.printGameBoard();
 	        	break;
 	        	
@@ -115,6 +115,14 @@ public class COSC322Test extends GamePlayer{
     			String BLACK = (String) msgDetails.get(AmazonsGameMessage.PLAYER_BLACK);
     			String WHITE = (String) msgDetails.get(AmazonsGameMessage.PLAYER_WHITE);
     			System.out.println("Black: " + BLACK + "   White: " + WHITE);
+    			if(BLACK.equals("322team3")) {
+    				playerId = 1; //Black
+    				System.out.println("myPlayerId: " + playerId);
+    				generateMove(playerId);
+    			} else {
+    				playerId = 2; //White
+    				System.out.println("myPlayerId: " + playerId);
+    			}
     			break;
     			
         	
@@ -132,12 +140,28 @@ public class COSC322Test extends GamePlayer{
 	    		int enemyArrowY = OponnentArrowPos.get(1);
 	    		
 	    		gameBoard.updateGameBoard(enemyCurrX, enemyCurrY, enemyNewX, enemyNewY, enemyArrowX, enemyArrowY);
-	    		gameBoard.printGameBoard(); 
+	    		gameBoard.printGameBoard();
 	    		
+	    		generateMove(playerId);
 	    		break;
     	}
     	    	
     	return true;   	
+    }
+    
+    public void generateMove (int playerId) {
+    	playerMove move = brain.bestMove(playerId);
+    	if (move != null) {
+    		ArrayList<Integer> queenCurrentPos = new ArrayList<>(Arrays.asList(move.getInitX(), move.getInitY()));
+    		ArrayList<Integer> queenNewPos = new ArrayList<>(Arrays.asList(move.getNewX(), move.getNewY()));
+    		ArrayList<Integer> arrowPos = new ArrayList<>(Arrays.asList(move.getArrowX(), move.getArrowY()));
+    		
+    		gameClient.sendMoveMessage(queenCurrentPos, queenNewPos, arrowPos);
+    		gamegui.updateGameState(queenCurrentPos, queenNewPos, arrowPos);
+    		System.out.println("Move has been sent: QueenInitPos: " + queenCurrentPos + ", QueenFinalPos: " + queenNewPos + ", ArrowPos: " + arrowPos);
+    	} else {
+    		System.out.println("I run out of moves :(");
+    	}
     }
     
     

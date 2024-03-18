@@ -8,10 +8,11 @@ public class GBoard{
 	public final int black = 2;
 	public final int arrow = 3;
 	
+	public int[][] temp;
 	public int[][] gboard;
 	
 	public GBoard(ArrayList<Integer> gameState) {
-		gboard = new int[10][10];
+		gboard = new int[11][11];
 		setGameBoard(gameState);
 	}
 	
@@ -47,7 +48,7 @@ public class GBoard{
 	}
 	
 	public boolean isInsideBoard (int x, int y){
-		return x>=0 && x<10 && y>=0 && y<10;
+		return x>=1 && x<=10 && y>=1 && y<=10;
 		
 	}
 	
@@ -86,8 +87,8 @@ public class GBoard{
 	
 	public void setGameBoard(ArrayList<Integer> gameState) {
     	int idx = 0;
-    	for (int i = 0; i<10; i++) {
-    		for (int j = 0; j<10; j++) {
+    	for (int i = 0; i<11; i++) {
+    		for (int j = 0; j<11; j++) {
     			gboard[i][j] = gameState.get(idx++);
     		}
     	}
@@ -100,10 +101,10 @@ public class GBoard{
     
     public void printGameBoard() {
         System.out.println("Game Board:");
-        System.out.println("  0 1 2 3 4 5 6 7 8 9");
-        for (int i=0; i<10; i++) {
-            System.out.print(i + " ");
-            for (int j=0; j<10; j++) {
+        //System.out.println("  1 2 3 4 5 6 7 8 9 10");
+        for (int i=0; i<11; i++) {
+            //System.out.print(i + " ");
+            for (int j=0; j<11; j++) {
                 System.out.print(gboard[i][j] + " ");
             }
             System.out.println();
