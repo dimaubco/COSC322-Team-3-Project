@@ -41,10 +41,4 @@ public class playerMove {
     public int getArrowY() {
         return arrowY;
     }
-    
-    @Override
-    public String toString() {
-        return String.format("I am moving from (%d, %d) to (%d, %d) and then shoot an arrow to (%d, %d)", 
-                initX, initY, newX, newY, arrowX, arrowY);
-    }
 }

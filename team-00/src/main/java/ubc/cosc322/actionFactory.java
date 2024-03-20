@@ -75,9 +75,9 @@ public class actionFactory {
 		return shots;
 		
 	}
-	public static int countOpponentMoves(GBoard board, int opponentId) {
-	    List<playerMove> opponentMoves = generateAllMoves(board, opponentId);
-	    return opponentMoves.size();
+	public static int countPossibleMoves(GBoard board, int playerId) {
+	    List<playerMove> possibleMoves = generateAllMoves(board, playerId);
+	    return possibleMoves.size();
 	}
 	
 }

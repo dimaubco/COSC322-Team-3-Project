@@ -150,7 +150,7 @@ public class COSC322Test extends GamePlayer{
     }
     
     public void generateMove (int playerId) {
-    	playerMove move = brain.bestMove(playerId);
+    	playerMove move = brain.makeMove(playerId);
     	if (move != null) {
     		ArrayList<Integer> queenCurrentPos = new ArrayList<>(Arrays.asList(move.getInitX(), move.getInitY()));
     		ArrayList<Integer> queenNewPos = new ArrayList<>(Arrays.asList(move.getNewX(), move.getNewY()));
