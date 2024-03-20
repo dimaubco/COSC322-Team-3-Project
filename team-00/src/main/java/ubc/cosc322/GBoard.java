@@ -97,18 +97,30 @@ public class GBoard{
 	public void updateGameBoard(int currX, int currY, int nextX, int nextY, int arrX, int arrY) {
 		gboard[nextX][nextY] = gboard[currX][currY];
 		gboard[currX][currY] = blank;
+		gboard[arrX][arrY] = arrow;
 	}
     
     public void printGameBoard() {
         System.out.println("Game Board:");
-        //System.out.println("  1 2 3 4 5 6 7 8 9 10");
         for (int i=0; i<11; i++) {
-            //System.out.print(i + " ");
             for (int j=0; j<11; j++) {
                 System.out.print(gboard[i][j] + " ");
             }
             System.out.println();
         }
     }
-	
+    
+    public GBoard(GBoard original) {
+        this.gboard = new int[original.gboard.length][];
+        for (int i = 0; i < original.gboard.length; i++) {
+            this.gboard[i] = new int[original.gboard[i].length];
+            System.arraycopy(original.gboard[i], 0, this.gboard[i], 0, original.gboard[i].length);
+        }
+    }
+
+    public boolean isGameOver() {
+        // Example condition: no moves left for either player
+        return actionFactory.generateAllMoves(this, white).isEmpty() && actionFactory.generateAllMoves(this, black).isEmpty();
+    }
+
 }

@@ -37,6 +37,18 @@ public class actionFactory {
 		return moves;
 	}
 	
+	public static List<playerMove> generateAllMoves(GBoard board, int playerId){
+		List<playerMove> possibleMoves = new ArrayList<>();
+		for(int i = 1; i<=10; i++) {
+    		for(int j = 1; j<=10; j++) {
+    			if (board.gboard[i][j] == playerId) {
+    				possibleMoves.addAll(actionFactory.generateMoves(i, j, board));
+    			}
+    		}
+    	}
+		return possibleMoves;
+	}
+	
 	private static List<int[]> generateShots(int x, int y, GBoard board){
 		List<int[]> shots = new ArrayList<>();
 		//possible move directions: up, down, left, right, diagonals
@@ -62,6 +74,10 @@ public class actionFactory {
 		
 		return shots;
 		
+	}
+	public static int countOpponentMoves(GBoard board, int opponentId) {
+	    List<playerMove> opponentMoves = generateAllMoves(board, opponentId);
+	    return opponentMoves.size();
 	}
 	
 }
