@@ -148,6 +148,7 @@ public class playerBrain {
         List<playerMoveWithDepth> playerPoints = null;
         List<playerMoveWithDepth> enemyPoints = null;
         List<playerMoveWithDepth> neutralPoints = null;
+        int maxDepth = 0;
         
         if (allPossiblePlayerMoves.isEmpty()) {
             System.out.println("I run out of moves. I can't move anywhere :(");
@@ -178,7 +179,26 @@ public class playerBrain {
             	}
             }
             
-            playerMove move = new playerMove(i.getInitX(), i.getInitY(), i.getNewX(), i.getNewY(), i.getArrowX(), i.getArrowY());
+            maxDepth = i.getDepth();
+        }
+        
+        List<playerMove> playerPointsMaxDepth = null;
+        
+        for (playerMoveWithDepth j : playerPoints) {
+        	if (j.getDepth() == maxDepth) {
+        		playerPointsMaxDepth.add(new playerMove(j.getInitX(), j.getInitY(), j.getNewX(), j.getNewY(), j.getArrowX(), j.getArrowY()));
+        	}
+        }
+        
+        for (playerMove move : playerPointsMaxDepth) {
+            long runTime = System.currentTimeMillis() - startTimer;
+            if (runTime > TIME_OUT - 5000) { // 25 seconds max. to perform moves
+                if (bestMove == null) {
+                    bestMove = playerPointsMaxDepth.get(rand.nextInt(playerPointsMaxDepth.size())); // fallback behavior so that if running out of time, produce random move.
+                    System.out.println("Generated random move to avoid timeout");
+                }
+                break;
+            }
             
             GBoard tempBoard = new GBoard(board);
             tempBoard.applyMove(move);
@@ -190,6 +210,8 @@ public class playerBrain {
                 bestMove = move;
             }
         }
+        
+
         
         return bestMove;
     }

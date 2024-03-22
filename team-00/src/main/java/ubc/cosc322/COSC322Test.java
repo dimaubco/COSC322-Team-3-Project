@@ -149,34 +149,8 @@ public class COSC322Test extends GamePlayer{
     	return true;   	
     }
     
-//    public void generateMove (int playerId) {
-//    	playerMove move = brain.makeMove(playerId);
-//    	if (move != null) {
-//    		ArrayList<Integer> queenCurrentPos = new ArrayList<>(Arrays.asList(move.getInitX(), move.getInitY()));
-//    		ArrayList<Integer> queenNewPos = new ArrayList<>(Arrays.asList(move.getNewX(), move.getNewY()));
-//    		ArrayList<Integer> arrowPos = new ArrayList<>(Arrays.asList(move.getArrowX(), move.getArrowY()));
-//    		
-//    		gameClient.sendMoveMessage(queenCurrentPos, queenNewPos, arrowPos);
-//    		gamegui.updateGameState(queenCurrentPos, queenNewPos, arrowPos);
-//    		
-//    		int myCurrX = queenCurrentPos.get(0);
-//    		int myCurrY = queenCurrentPos.get(1);
-//    		int myNewX = queenNewPos.get(0);
-//    		int myNewY = queenNewPos.get(1);
-//    		int myArrowX = arrowPos.get(0);
-//    		int myArrowY = arrowPos.get(1);
-//    		
-//    		gameBoard.updateGameBoard(myCurrX, myCurrY, myNewX, myNewY, myArrowX, myArrowY);
-//    		gameBoard.printGameBoard();
-//
-//    		System.out.println("Move has been sent: QueenInitPos: " + queenCurrentPos + ", QueenFinalPos: " + queenNewPos + ", ArrowPos: " + arrowPos);
-//    	} else {
-//    		System.out.println("I run out of moves :(");
-//    	}
-//    }
-    
     public void generateMove (int playerId) {
-    	playerMove move = brain.makeMove(playerId);
+    	playerMove move = brain.miniMax(playerId);
     	if (move != null) {
     		ArrayList<Integer> queenCurrentPos = new ArrayList<>(Arrays.asList(move.getInitX(), move.getInitY()));
     		ArrayList<Integer> queenNewPos = new ArrayList<>(Arrays.asList(move.getNewX(), move.getNewY()));
