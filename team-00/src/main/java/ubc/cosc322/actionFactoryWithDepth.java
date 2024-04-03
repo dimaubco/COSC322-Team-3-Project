@@ -24,6 +24,7 @@ public class actionFactoryWithDepth {
 		for (int[] dir : moveDirections) { // generate all the moves with depth = 1
 			int newX = x + dir[0];
 			int newY = y + dir[1];
+			System.out.println("Init = " + x + y + " New = " + newX + newY);
 			while(board.isInsideBoard(newX, newY) && (board.gboard[newX][newY] == board.blank)){
 				if (board.isClear(x, y, newX, newY)) {
 					List<int[]> arrowShots = generateShots(newX, newY, board);
@@ -31,8 +32,13 @@ public class actionFactoryWithDepth {
 						if(board.isClear(newX, newY, shot[0], shot[1])) {
 							moves.add(new playerMoveWithDepth(x, y, newX, newY, shot[0], shot[1], depth));
 							childMoves.add(new playerMoveWithDepth(x, y, newX, newY, shot[0], shot[1], depth));
-						}
+							System.out.println("Created move at depth = " + depth);
+						} else {
+							System.out.println("Board not clear for arrow");
+						}	
 					}
+				} else {
+					System.out.println("Board not clear for move");
 				}
 				newX += dir[0];
 				newY += dir[1];
@@ -121,6 +127,7 @@ public class actionFactoryWithDepth {
     					if (add == 1) { // this spot has not yet been reached, add it to possible moves.
     						possibleMoves.add(new playerMoveWithDepth(move.getInitX(), move.getInitY(), move.getNewX(), move.getNewY(), move.getArrowX(), move.getArrowY(), move.getDepth()));
     						//System.out.println("Added move at depth: " + move.getDepth());
+    						//System.out.println("init x,y = " + move.getInitX() + move.getInitY() + " Depth: " + move.getDepth() + " Arrow: " + move.getArrowX() + move.getArrowY());
     					} 
     				}
     			}

@@ -147,7 +147,7 @@ public class playerBrain {
         
         List<playerMoveWithDepth> playerPoints = new ArrayList<>();
         List<playerMoveWithDepth> enemyPoints = new ArrayList<>();
-        List<playerMoveWithDepth> neutralPoints = new ArrayList<>();
+        List<playerMove> neutralPoints = new ArrayList<>();
         int maxDepth = 0;
         
         if (allPossiblePlayerMoves.isEmpty()) {
@@ -213,11 +213,48 @@ public class playerBrain {
             		//System.out.println("added enemy point");
             		enemyPoints.add(new playerMoveWithDepth(enemy.getInitX(), enemy.getInitY(), enemy.getNewX(), enemy.getNewY(), enemy.getArrowX(), enemy.getArrowY(), enemy.getDepth()));
             	} else if (i.getNewX() == enemy.getNewX() && i.getNewY() == enemy.getNewY()) { // point is neutral
-            		neutralPoints.add(new playerMoveWithDepth(i.getInitX(), i.getInitY(), i.getNewX(), i.getNewY(), i.getArrowX(), i.getArrowY(), i.getDepth())); 
+            		neutralPoints.add(new playerMove(i.getInitX(), i.getInitY(), i.getNewX(), i.getNewY(), i.getArrowX(), i.getArrowY())); 
             		//System.out.println("added neutral point");
             	}
             }
             
+        }
+        
+        if (playerPoints.isEmpty()) { //Check if playerPoints is empty, use neutralPoints
+        	System.out.println("No player points left");
+        	for (playerMove move : neutralPoints) {
+        		GBoard tempBoard = new GBoard(board);
+                tempBoard.applyMove(move);
+               
+                int enemyMovesCount = actionFactory.countPossibleMoves(tempBoard, this.enemyId);
+
+                if (enemyMovesCount < minimumEnemyMoves) {
+                    minimumEnemyMoves = enemyMovesCount;
+                    bestMove = move;
+                }     		
+        	}
+        	if (neutralPoints.isEmpty()) { // If neutralPoints is Empty, use enemyPoints
+        		System.out.println("No neutral points left");
+            	List<playerMove> enemyPointsMinDepth = new ArrayList<>();;
+                
+                for (playerMoveWithDepth j : enemyPoints) {
+                		enemyPointsMinDepth.add(new playerMove(j.getInitX(), j.getInitY(), j.getNewX(), j.getNewY(), j.getArrowX(), j.getArrowY()));
+                }
+            	for (playerMove move : enemyPointsMinDepth) {
+            		GBoard tempBoard = new GBoard(board);
+                    tempBoard.applyMove(move);
+                   
+                    int enemyMovesCount = actionFactory.countPossibleMoves(tempBoard, this.enemyId);
+
+                    if (enemyMovesCount < minimumEnemyMoves) {
+                        minimumEnemyMoves = enemyMovesCount;
+                        bestMove = move;                      
+                    } 
+                    if(enemyPoints.isEmpty()) {
+                    	System.out.println("No enemy points left");
+                    }
+            	}   		
+        	}
         }
         
         List<playerMove> playerPointsMaxDepth = new ArrayList<>();;
@@ -248,7 +285,6 @@ public class playerBrain {
                 bestMove = move;
             }
         }
-        
         return bestMove;
     }
     
