@@ -24,6 +24,7 @@ public class actionFactoryWithDepth {
 		for (int[] dir : moveDirections) { // generate all the moves with depth = 1
 			int newX = x + dir[0];
 			int newY = y + dir[1];
+			System.out.println("Init = " + x + y + " New = " + newX + newY);
 			while(board.isInsideBoard(newX, newY) && (board.gboard[newX][newY] == board.blank)){
 				if (board.isClear(x, y, newX, newY)) {
 					List<int[]> arrowShots = generateShots(newX, newY, board);
@@ -31,24 +32,31 @@ public class actionFactoryWithDepth {
 						if(board.isClear(newX, newY, shot[0], shot[1])) {
 							moves.add(new playerMoveWithDepth(x, y, newX, newY, shot[0], shot[1], depth));
 							childMoves.add(new playerMoveWithDepth(x, y, newX, newY, shot[0], shot[1], depth));
-						}
+							System.out.println("Created move at depth = " + depth);
+						} else {
+							System.out.println("Board not clear for arrow");
+						}	
 					}
+				} else {
+					System.out.println("Board not clear for move");
 				}
 				newX += dir[0];
 				newY += dir[1];
 			}
 		}
+
 		// generate all child moves
 		while(!childMoves.isEmpty()) { // end loop when all possible moves have been generated
 			// ListIterator<playerMoveWithDepth> itr = moves.listIterator(); // create iterator for all the moves in the Arraylist
-			// copy the moves added in the previous depth level
-			tempMoves.addAll(childMoves);
+			tempMoves.addAll(childMoves); // copy the moves added in the previous depth level
 			childMoves.clear();
-			depth = depth + 1; // increase depth
-			int add = 1;
+			depth++; // increase depth
+			
+			//System.out.println("Depth = " + depth);
 			
 			for (playerMoveWithDepth move : tempMoves) { // loop through all the moves that were added in the previous depth level
 				for (int[] dir : moveDirections) {
+					int add = 1;
 					int newX = move.getNewX() + dir[0];
 					int newY = move.getNewY() + dir[1];
 					while(board.isInsideBoard(newX, newY) && (board.gboard[newX][newY] == board.blank)){
@@ -58,7 +66,7 @@ public class actionFactoryWithDepth {
 							if (newX == check.getInitX() && newY == check.getInitY()) {
 								add = 0; // the position is already present in the move ArrayList, so don't add this move
 							} else if (newX == check.getNewX() && newY == check.getNewY()) {
-								add = 0;
+								add = 0; // the position is already present in the move ArrayList, so don't add this move
 							}
 						}
 						if (board.isClear(move.getNewX(), move.getNewY(), newX, newY) && add == 1) {
@@ -66,7 +74,8 @@ public class actionFactoryWithDepth {
 							for (int[] shot : arrowShots) {
 								if(board.isClear(newX, newY, shot[0], shot[1])) {
 									moves.add(new playerMoveWithDepth(move.getNewX(), move.getNewY(), newX, newY, shot[0], shot[1], depth));
-									childMoves.add(new playerMoveWithDepth(move.getNewX(), move.getNewY(), newX, newY, shot[0], shot[1], depth));
+									childMoves.add(new playerMoveWithDepth(move.getNewX(), move.getNewY(), newX, newY, shot[0], shot[1], depth));	
+									//System.out.println("Created move at depth = " + depth);
 								}
 							}
 						}
@@ -75,7 +84,11 @@ public class actionFactoryWithDepth {
 					}
 				}
 			}
+			
 			tempMoves.clear();
+			if (childMoves.isEmpty()) {
+				//System.out.println("Child Moves is empty at depth = " + depth);
+			}
 		}
 			
 		return moves;
@@ -101,16 +114,20 @@ public class actionFactoryWithDepth {
     								&& move.getDepth() < check.getDepth()){
     							itr.set(new playerMoveWithDepth(move.getInitX(), move.getInitY(), move.getNewX(), move.getNewY(), move.getArrowX(), move.getArrowY(), move.getDepth()));
     							add = 0; // This move has a shorter route to the spot than the move currently present in possibleMoves, the old move is replaced.
+    							//System.out.println("Replaced move at depth: " + move.getDepth());
     						} else if(move.getNewX() == check.getNewX() 
     								&& move.getNewY() == check.getNewY() 
     								&& move.getArrowX() == check.getArrowX() 
     								&& move.getArrowY() == check.getArrowY()
     								&& move.getDepth() > check.getDepth()) {
     							add = 0; // There is already a move in possibleMoves with a shorter route to this spot, check next move.
+    							//System.out.println("Didn't add move at depth: " + move.getDepth());
     						}
     					}
     					if (add == 1) { // this spot has not yet been reached, add it to possible moves.
     						possibleMoves.add(new playerMoveWithDepth(move.getInitX(), move.getInitY(), move.getNewX(), move.getNewY(), move.getArrowX(), move.getArrowY(), move.getDepth()));
+    						//System.out.println("Added move at depth: " + move.getDepth());
+    						//System.out.println("init x,y = " + move.getInitX() + move.getInitY() + " Depth: " + move.getDepth() + " Arrow: " + move.getArrowX() + move.getArrowY());
     					} 
     				}
     			}
