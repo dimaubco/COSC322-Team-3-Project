@@ -37,13 +37,14 @@ public class actionFactoryWithDepth {
 				newX += dir[0];
 				newY += dir[1];
 			}
-		}		
+		}
 		// generate all child moves
 		while(!childMoves.isEmpty()) { // end loop when all possible moves have been generated
 			// ListIterator<playerMoveWithDepth> itr = moves.listIterator(); // create iterator for all the moves in the Arraylist
-			tempMoves = childMoves; // copy the moves added in the previous depth level
+			// copy the moves added in the previous depth level
+			tempMoves.addAll(childMoves);
 			childMoves.clear();
-			depth++; // increase depth
+			depth = depth + 1; // increase depth
 			int add = 1;
 			
 			for (playerMoveWithDepth move : tempMoves) { // loop through all the moves that were added in the previous depth level

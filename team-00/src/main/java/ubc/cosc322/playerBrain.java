@@ -142,8 +142,24 @@ public class playerBrain {
         
         List<playerMoveWithDepth> allPossiblePlayerMoves = actionFactoryWithDepth.generateAllMoves(board, playerId);
         List<playerMoveWithDepth> allPossibleEnemyMoves = actionFactoryWithDepth.generateAllMoves(board, enemyId);
+       
+        List<playerMove> NormalPlayer = actionFactory.generateAllMoves(board, playerId);
+        List<playerMove> NormalEnemy = actionFactory.generateAllMoves(board, enemyId);
+        
+//        int count = 0;
+//        for (playerMoveWithDepth i : allPossiblePlayerMoves) {
+//        	for(playerMoveWithDepth j : allPossibleEnemyMoves) {
+//        		if (i.getNewX() == j.getNewX() && i.getNewY() == j.getNewY()) {
+//        			System.out.println("HELLO GOOD AFTERNOON");
+//        			System.out.println("PLAYER DEPTH: " + i.getDepth() + " ENEMY DEPTH: " + j.getDepth());
+//        			count++;
+//        		}
+//        	}
+//        }
+//        System.out.println("COUNT: " + count);
         
         ListIterator<playerMoveWithDepth> itrEnemy = allPossibleEnemyMoves.listIterator();
+        
         
         List<playerMoveWithDepth> playerPoints = null;
         List<playerMoveWithDepth> enemyPoints = null;
@@ -170,7 +186,7 @@ public class playerBrain {
             
             while(itrEnemy.hasNext()) { // See if enemy's move is better
             	playerMoveWithDepth enemy = itrEnemy.next();
-            	if (i.getNewX() == enemy.getNewX() && i.getNewY() == enemy.getNewY() && i.getDepth() < enemy.getDepth()) { // player move is closer
+            	if (i.getNewX() == enemy.getNewX() && i.getNewY() == enemy.getNewY()) { // player move is closer
             		playerPoints.add(new playerMoveWithDepth(i.getInitX(), i.getInitY(), i.getNewX(), i.getNewY(), i.getArrowX(), i.getArrowY(), i.getDepth()));
             	} else if (i.getNewX() == enemy.getNewX() && i.getNewY() == enemy.getNewY() && i.getDepth() > enemy.getDepth()) { // enemy move is closer
             		enemyPoints.add(new playerMoveWithDepth(enemy.getInitX(), enemy.getInitY(), enemy.getNewX(), enemy.getNewY(), enemy.getArrowX(), enemy.getArrowY(), enemy.getDepth()));

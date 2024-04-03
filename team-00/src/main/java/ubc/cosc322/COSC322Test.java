@@ -115,7 +115,7 @@ public class COSC322Test extends GamePlayer{
     			String BLACK = (String) msgDetails.get(AmazonsGameMessage.PLAYER_BLACK);
     			String WHITE = (String) msgDetails.get(AmazonsGameMessage.PLAYER_WHITE);
     			System.out.println("Black: " + BLACK + "   White: " + WHITE);
-    			if(BLACK.equals("team3")) {
+    			if(BLACK.equals("322team3")) {
     				playerId = 1; //Black
     				System.out.println("myPlayerId: " + playerId);
     				generateMove(playerId);
@@ -150,7 +150,7 @@ public class COSC322Test extends GamePlayer{
     }
     
     public void generateMove (int playerId) {
-    	playerMove move = brain.miniMax(playerId);
+    	playerMove move = brain.makeMove(playerId);
     	if (move != null) {
     		ArrayList<Integer> queenCurrentPos = new ArrayList<>(Arrays.asList(move.getInitX(), move.getInitY()));
     		ArrayList<Integer> queenNewPos = new ArrayList<>(Arrays.asList(move.getNewX(), move.getNewY()));
