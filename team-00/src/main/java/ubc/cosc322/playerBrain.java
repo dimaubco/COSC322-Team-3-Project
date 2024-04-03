@@ -145,9 +145,9 @@ public class playerBrain {
         
         ListIterator<playerMoveWithDepth> itrEnemy = allPossibleEnemyMoves.listIterator();
         
-        List<playerMoveWithDepth> playerPoints = null;
-        List<playerMoveWithDepth> enemyPoints = null;
-        List<playerMoveWithDepth> neutralPoints = null;
+        List<playerMoveWithDepth> playerPoints = new ArrayList<>();
+        List<playerMoveWithDepth> enemyPoints = new ArrayList<>();
+        List<playerMoveWithDepth> neutralPoints = new ArrayList<>();
         int maxDepth = 0;
         
         if (allPossiblePlayerMoves.isEmpty()) {
@@ -158,7 +158,38 @@ public class playerBrain {
         playerMove bestMove = null;
         int minimumEnemyMoves = Integer.MAX_VALUE;
 
+        //----- Test -----
+//        int px = -1;
+//    	int ex = -1;
+//    	int py = -1;
+//    	int ey = -1;
+//        
+//        for (playerMoveWithDepth i : allPossiblePlayerMoves) {
+//        	itrEnemy = allPossibleEnemyMoves.listIterator();
+//        	while (itrEnemy.hasNext()) {
+//        		playerMoveWithDepth enemy = itrEnemy.next();
+//        		if (i.getNewX() == enemy.getNewX() && i.getNewY() == enemy.getNewY() && i.getNewX() != px && enemy.getNewX() != ex && i.getNewY() != py && enemy.getNewY() != ey) {
+//        			px = i.getNewX();
+//        			ex = enemy.getNewX();
+//        			py = i.getNewY();
+//        			ey = enemy.getNewY();
+//        			System.out.println("MATCH FOUND");
+//        			System.out.println("Player pos: x= " + px + " y= " + py + " Depth: " + i.getDepth());
+//        			System.out.println("enemy pos: x= " + ex + " y= " + ey + " Depth: " + enemy.getDepth());
+//        			if(i.getDepth() > enemy.getDepth()) {
+//        				System.out.println("	Enemy is closer");
+//        			} else if (i.getDepth() == enemy.getDepth()) {
+//        				System.out.println("	Tie");
+//        			} else {
+//        				System.out.println("	Player is closer");
+//        			}
+//        		}
+//        	}
+//        }
+        // ----- -----
+
         for (playerMoveWithDepth i : allPossiblePlayerMoves) {
+        	itrEnemy = allPossibleEnemyMoves.listIterator();
             long runTime = System.currentTimeMillis() - startTimer;
             if (runTime > TIME_OUT - 5000) { // 25 seconds max. to perform moves
 //                if (bestMove == null) {
@@ -168,21 +199,28 @@ public class playerBrain {
                 break;
             }
             
+            //System.out.println("Player init pos: " + i.getInitX() + i.getInitY() + " Depth: " + i.getDepth());
+            
             while(itrEnemy.hasNext()) { // See if enemy's move is better
             	playerMoveWithDepth enemy = itrEnemy.next();
             	if (i.getNewX() == enemy.getNewX() && i.getNewY() == enemy.getNewY() && i.getDepth() < enemy.getDepth()) { // player move is closer
             		playerPoints.add(new playerMoveWithDepth(i.getInitX(), i.getInitY(), i.getNewX(), i.getNewY(), i.getArrowX(), i.getArrowY(), i.getDepth()));
+            		if (i.getDepth() > maxDepth) {
+            			maxDepth = i.getDepth();
+            		}
+            		//System.out.println("added player point");
             	} else if (i.getNewX() == enemy.getNewX() && i.getNewY() == enemy.getNewY() && i.getDepth() > enemy.getDepth()) { // enemy move is closer
+            		//System.out.println("added enemy point");
             		enemyPoints.add(new playerMoveWithDepth(enemy.getInitX(), enemy.getInitY(), enemy.getNewX(), enemy.getNewY(), enemy.getArrowX(), enemy.getArrowY(), enemy.getDepth()));
             	} else if (i.getNewX() == enemy.getNewX() && i.getNewY() == enemy.getNewY()) { // point is neutral
             		neutralPoints.add(new playerMoveWithDepth(i.getInitX(), i.getInitY(), i.getNewX(), i.getNewY(), i.getArrowX(), i.getArrowY(), i.getDepth())); 
+            		//System.out.println("added neutral point");
             	}
             }
             
-            maxDepth = i.getDepth();
         }
         
-        List<playerMove> playerPointsMaxDepth = null;
+        List<playerMove> playerPointsMaxDepth = new ArrayList<>();;
         
         for (playerMoveWithDepth j : playerPoints) {
         	if (j.getDepth() == maxDepth) {
@@ -210,8 +248,6 @@ public class playerBrain {
                 bestMove = move;
             }
         }
-        
-
         
         return bestMove;
     }
