@@ -38,10 +38,7 @@ public class actionFactoryWithDepth {
 				newY += dir[1];
 			}
 		}
-		if (!childMoves.isEmpty()) {
-			//System.out.println("Child Moves is not empty");
-		}
-		
+
 		// generate all child moves
 		while(!childMoves.isEmpty()) { // end loop when all possible moves have been generated
 			// ListIterator<playerMoveWithDepth> itr = moves.listIterator(); // create iterator for all the moves in the Arraylist
@@ -52,8 +49,8 @@ public class actionFactoryWithDepth {
 			//System.out.println("Depth = " + depth);
 			
 			for (playerMoveWithDepth move : tempMoves) { // loop through all the moves that were added in the previous depth level
-				int add = 1;
 				for (int[] dir : moveDirections) {
+					int add = 1;
 					int newX = move.getNewX() + dir[0];
 					int newY = move.getNewY() + dir[1];
 					while(board.isInsideBoard(newX, newY) && (board.gboard[newX][newY] == board.blank)){
@@ -63,7 +60,7 @@ public class actionFactoryWithDepth {
 							if (newX == check.getInitX() && newY == check.getInitY()) {
 								add = 0; // the position is already present in the move ArrayList, so don't add this move
 							} else if (newX == check.getNewX() && newY == check.getNewY()) {
-								add = 0;
+								add = 0; // the position is already present in the move ArrayList, so don't add this move
 							}
 						}
 						if (board.isClear(move.getNewX(), move.getNewY(), newX, newY) && add == 1) {
@@ -71,8 +68,7 @@ public class actionFactoryWithDepth {
 							for (int[] shot : arrowShots) {
 								if(board.isClear(newX, newY, shot[0], shot[1])) {
 									moves.add(new playerMoveWithDepth(move.getNewX(), move.getNewY(), newX, newY, shot[0], shot[1], depth));
-									childMoves.add(new playerMoveWithDepth(move.getNewX(), move.getNewY(), newX, newY, shot[0], shot[1], depth));
-									//System.out.println("no error here, Queen x: " + x + " y: " + y + " Added move from x: " + move.getNewX() + " y: " + move.getNewY() + " to x: " + newX + " y: " + newY);	
+									childMoves.add(new playerMoveWithDepth(move.getNewX(), move.getNewY(), newX, newY, shot[0], shot[1], depth));	
 									//System.out.println("Created move at depth = " + depth);
 								}
 							}
