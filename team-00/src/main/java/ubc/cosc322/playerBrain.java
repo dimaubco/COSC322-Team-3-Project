@@ -215,6 +215,8 @@ public class playerBrain {
             	} else if (i.getNewX() == enemy.getNewX() && i.getNewY() == enemy.getNewY()) { // point is neutral
             		neutralPoints.add(new playerMove(i.getInitX(), i.getInitY(), i.getNewX(), i.getNewY(), i.getArrowX(), i.getArrowY())); 
             		//System.out.println("added neutral point");
+            	} else { //enemy can't reach this point
+            		playerPoints.add(new playerMoveWithDepth(i.getInitX(), i.getInitY(), i.getNewX(), i.getNewY(), i.getArrowX(), i.getArrowY(), i.getDepth()));
             	}
             }
             
@@ -250,11 +252,11 @@ public class playerBrain {
                         minimumEnemyMoves = enemyMovesCount;
                         bestMove = move;                      
                     } 
-                    if(enemyPoints.isEmpty()) {
-                    	System.out.println("No enemy points left");
-                    }
             	}   		
         	}
+        	if(enemyPoints.isEmpty()) {
+            	System.out.println("No enemy points left");
+            }
         }
         
         List<playerMove> playerPointsMaxDepth = new ArrayList<>();;
