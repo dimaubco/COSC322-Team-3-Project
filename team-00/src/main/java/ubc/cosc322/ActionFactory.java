@@ -2,9 +2,9 @@ package ubc.cosc322;
 
 import java.util.*;
 
-public class actionFactory {
-	public static List<playerMove> generateMoves(int x, int y, GBoard board){
-		List<playerMove> moves = new ArrayList<>();
+public class ActionFactory {
+	public static List<PlayerMove> generateMoves(int x, int y, GBoard board){
+		List<PlayerMove> moves = new ArrayList<>();
 		
 		//possible move directions: up, down, left, right, diagonals
 		int[][] moveDirections = {
@@ -18,31 +18,31 @@ public class actionFactory {
 				{-1,1}}; //Down-Right Diagonal
 		
 		for (int[] dir : moveDirections) {
-			int newX = x + dir[0];
-			int newY = y + dir[1];
-			while(board.isInsideBoard(newX, newY) && (board.gboard[newX][newY] == board.blank)){
-				if (board.isClear(x, y, newX, newY)) {
-					List<int[]> arrowShots = generateShots(newX, newY, board);
+			int newX = x + dir[0]; //move by one horizontal direction
+			int newY = y + dir[1]; //move by one vertical direction
+			while(board.isInsideBoard(newX, newY) && (board.gboard[newX][newY] == board.blank)){ //while the new position is inside board and the new position is blank
+				if (board.isClear(x, y, newX, newY)) { //make sure that board is clear
+					List<int[]> arrowShots = generateShots(newX, newY, board); //generate arrow shots
 					for (int[] shot : arrowShots) {
-						if(board.isClear(newX, newY, shot[0], shot[1])) {
-							moves.add(new playerMove(x, y, newX, newY, shot[0], shot[1]));
+						if(board.isClear(newX, newY, shot[0], shot[1])) { //make sure board is clear
+							moves.add(new PlayerMove(x, y, newX, newY, shot[0], shot[1]));
 						}
 					}
 				}
-				newX += dir[0];
-				newY += dir[1];
+				newX += dir[0]; //move by one horizontal direction
+				newY += dir[1]; //move by one vertical direction
 			}
 		}
 		
 		return moves;
 	}
 	
-	public static List<playerMove> generateAllMoves(GBoard board, int playerId){
-		List<playerMove> possibleMoves = new ArrayList<>();
+	public static List<PlayerMove> generateAllMoves(GBoard board, int playerId){
+		List<PlayerMove> possibleMoves = new ArrayList<>();
 		for(int i = 1; i<=10; i++) {
     		for(int j = 1; j<=10; j++) {
     			if (board.gboard[i][j] == playerId) {
-    				possibleMoves.addAll(actionFactory.generateMoves(i, j, board));
+    				possibleMoves.addAll(ActionFactory.generateMoves(i, j, board)); //add all possible moves
     			}
     		}
     	}
@@ -76,7 +76,7 @@ public class actionFactory {
 		
 	}
 	public static int countPossibleMoves(GBoard board, int playerId) {
-	    List<playerMove> possibleMoves = generateAllMoves(board, playerId);
+	    List<PlayerMove> possibleMoves = generateAllMoves(board, playerId);
 	    return possibleMoves.size();
 	}
 	

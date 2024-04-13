@@ -1,14 +1,14 @@
 package ubc.cosc322;
 
-public class playerMove {
-    private int initX;
+public class PlayerMove {
+    private int initX; 
     private int initY;
     private int newX;
     private int newY;
     private int arrowX;
     private int arrowY;
 
-    public playerMove(int initX, int initY, int newX, int newY, int arrowX, int arrowY) {
+    public PlayerMove(int initX, int initY, int newX, int newY, int arrowX, int arrowY) {
         this.initX = initX;
         this.initY = initY;
         this.newX = newX;

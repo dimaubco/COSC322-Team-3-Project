@@ -29,8 +29,11 @@ public class COSC322Test extends GamePlayer{
     private String passwd = null;
     
     private GBoard gameBoard;
-    private playerBrain brain;
+    private PlayerBrain brain;
+    
     int playerId = 0;
+    int playerMoveCounter = 0;
+	int searchDepthCount = 1;
     
 	
     /**
@@ -70,23 +73,16 @@ public class COSC322Test extends GamePlayer{
 
     @Override
     public void onLogin() {
-//    	List<Room> roomlist = gameClient.getRoomList();
-//    	System.out.println("List of rooms: " + roomlist);
-//    	String roomtojoin = roomlist.get(1).toString();
-//    	System.out.println("Joining room: " + roomtojoin);
-//    	gameClient.joinRoom(roomtojoin);
-//    	System.out.println("Congratualations!!! "
-//    			+ "I am called because the server indicated that the login is successfully");
-//    	System.out.println("The next step is to find a room and join it: "
-//    			+ "the gameClient instance created in my constructor knows how!"); 
-//    	System.out.println();
+    	System.out.println("Congratulations!!! "
+    			+ "I am called because the server indicated that the login is successfully");
+    	System.out.println("The next step is to find a room and join it: "
+    			+ "the gameClient instance created in my constructor knows how!"); 
+    	System.out.println();
     	
     	userName = gameClient.getUserName();
     	if(gamegui != null) {
 	    	gamegui.setRoomInformation(gameClient.getRoomList());
     	}
-    	
-    	System.out.println("Congratulation! login to server is succesful.");
     }
 
     @Override
@@ -101,37 +97,39 @@ public class COSC322Test extends GamePlayer{
     	switch (messageType) {
     		case GameMessage.GAME_STATE_BOARD:
 	    		ArrayList<Integer> gameS = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE);
-	    		gamegui.setGameState(gameS);
-	        	gameBoard = new GBoard(gameS);
-	        	gameBoard.setGameBoard(gameS);
+	    		gamegui.setGameState(gameS); //set game state
+	        	gameBoard = new GBoard(gameS); //create new board
+	        	gameBoard.setGameBoard(gameS); // set the game board based on the game state
 	        	System.out.println("GameBoard is Set!");
-	        	this.brain = new playerBrain(this.gameBoard);
+	        	this.brain = new PlayerBrain(this.gameBoard); //create a new player
 	        	System.out.println("Brain is Set!");
-	        	gameBoard.printGameBoard();
+	        	gameBoard.printGameBoard(); //print gameboard
 	        	break;
 	        	
     		case GameMessage.GAME_ACTION_START:
-    			
-    			String BLACK = (String) msgDetails.get(AmazonsGameMessage.PLAYER_BLACK);
-    			String WHITE = (String) msgDetails.get(AmazonsGameMessage.PLAYER_WHITE);
-    			System.out.println("Black: " + BLACK + "   White: " + WHITE);
-    			if(BLACK.equals("322team3")) {
-    				playerId = 1; //Black
+    			String BLACK = (String) msgDetails.get(AmazonsGameMessage.PLAYER_BLACK); //store the username of the black player
+    			String WHITE = (String) msgDetails.get(AmazonsGameMessage.PLAYER_WHITE); //store the username of the white player
+    			System.out.println("Black: " + BLACK + "   White: " + WHITE); 
+    			if(BLACK.equals(userName)) { //If black is our username, Make sure this is the username of your program.
+    				playerId = 1; //Set our player ID to 1
     				System.out.println("myPlayerId: " + playerId);
-    				generateMove(playerId);
+    				generateMove(playerId); //generate move for player ID 1
+    				playerMoveCounter++; 
     			} else {
-    				playerId = 2; //White
+    				playerId = 2; //else, set our player ID to 2
     				System.out.println("myPlayerId: " + playerId);
     			}
+    			playerMoveCounter = 0;
     			break;
     			
         	
     		case GameMessage.GAME_ACTION_MOVE:
-	    		gamegui.updateGameState(msgDetails);
-	    		ArrayList<Integer> OponnentQueenCurrPos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR); 
-	    		ArrayList<Integer> OponnentQueenNextPos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_NEXT);
-	    		ArrayList<Integer> OponnentArrowPos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS);
+	    		gamegui.updateGameState(msgDetails); //update the game state of our GUI based on the message
+	    		ArrayList<Integer> OponnentQueenCurrPos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR); // get and store the current position of opponent
+	    		ArrayList<Integer> OponnentQueenNextPos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_NEXT); // get and store the next position of opponent
+	    		ArrayList<Integer> OponnentArrowPos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS); // get and store the arrow opponent position
 	    		
+	    		//extract the position values
 	    		int enemyCurrX = OponnentQueenCurrPos.get(0);
 	    		int enemyCurrY = OponnentQueenCurrPos.get(1);
 	    		int enemyNewX = OponnentQueenNextPos.get(0);
@@ -139,10 +137,12 @@ public class COSC322Test extends GamePlayer{
 	    		int enemyArrowX = OponnentArrowPos.get(0);
 	    		int enemyArrowY = OponnentArrowPos.get(1);
 	    		
+	    		//update gameboard
 	    		gameBoard.updateGameBoard(enemyCurrX, enemyCurrY, enemyNewX, enemyNewY, enemyArrowX, enemyArrowY);
 	    		gameBoard.printGameBoard();
 	    		
-	    		generateMove(playerId);
+	    		generateMove(playerId); //with the updated board, generate our move 
+	    		playerMoveCounter++;
 	    		break;
     	}
     	    	
@@ -150,14 +150,26 @@ public class COSC322Test extends GamePlayer{
     }
     
     public void generateMove (int playerId) {
-    	playerMove move = brain.makeMove(playerId);
+    	PlayerMove move = null;
+    	long startTimer = System.currentTimeMillis(); //timer to make move
+    	move = brain.makeMove(playerId, searchDepthCount); //make move based on the searchDepthCount
+    	long runTime = System.currentTimeMillis() - startTimer;
+    	System.out.println("Current Search Depth: " + searchDepthCount);
+    	System.out.println("Time to generate move: " + (double)runTime/1000 + " seconds.");
+    	if (runTime < 3000 && playerMoveCounter > 3) { // if the runTime of the current search depth is below 3 seconds
+    		searchDepthCount++; // increase the depth
+    	}
+    	if (runTime > 25000) { // if the run time is more than 25 seconds, go back to the previous search depth
+    		searchDepthCount--;
+    	}
+    	
     	if (move != null) {
-    		ArrayList<Integer> queenCurrentPos = new ArrayList<>(Arrays.asList(move.getInitX(), move.getInitY()));
-    		ArrayList<Integer> queenNewPos = new ArrayList<>(Arrays.asList(move.getNewX(), move.getNewY()));
-    		ArrayList<Integer> arrowPos = new ArrayList<>(Arrays.asList(move.getArrowX(), move.getArrowY()));
+    		ArrayList<Integer> queenCurrentPos = new ArrayList<>(Arrays.asList(move.getInitX(), move.getInitY())); // get queen current position
+    		ArrayList<Integer> queenNewPos = new ArrayList<>(Arrays.asList(move.getNewX(), move.getNewY())); // get queen next position
+    		ArrayList<Integer> arrowPos = new ArrayList<>(Arrays.asList(move.getArrowX(), move.getArrowY())); //get the arrow position
     		
-    		gameClient.sendMoveMessage(queenCurrentPos, queenNewPos, arrowPos);
-    		gamegui.updateGameState(queenCurrentPos, queenNewPos, arrowPos);
+    		gameClient.sendMoveMessage(queenCurrentPos, queenNewPos, arrowPos); //send the positions to the server
+    		gamegui.updateGameState(queenCurrentPos, queenNewPos, arrowPos); //update the game state with our move
     		
     		int myCurrX = queenCurrentPos.get(0);
     		int myCurrY = queenCurrentPos.get(1);
@@ -166,15 +178,15 @@ public class COSC322Test extends GamePlayer{
     		int myArrowX = arrowPos.get(0);
     		int myArrowY = arrowPos.get(1);
     		
-    		gameBoard.updateGameBoard(myCurrX, myCurrY, myNewX, myNewY, myArrowX, myArrowY);
+    		gameBoard.updateGameBoard(myCurrX, myCurrY, myNewX, myNewY, myArrowX, myArrowY); //update our local gameboard
     		gameBoard.printGameBoard();
 
     		System.out.println("Move has been sent: QueenInitPos: " + queenCurrentPos + ", QueenFinalPos: " + queenNewPos + ", ArrowPos: " + arrowPos);
+    		System.out.println("Player Move Count: " + playerMoveCounter);
     	} else {
     		System.out.println("I run out of moves :(");
     	}
     }
-    
     
     @Override
     public String userName() {

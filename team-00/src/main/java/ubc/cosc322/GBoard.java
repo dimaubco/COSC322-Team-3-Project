@@ -16,7 +16,7 @@ public class GBoard{
 		setGameBoard(gameState);
 	}
 	
-	public boolean applyMove(playerMove move) {
+	public boolean applyMove(PlayerMove move) {
 		if (isLegal(move)) {
 			gboard[move.getNewX()][move.getNewY()] = gboard[move.getInitX()][move.getInitY()];
 			gboard[move.getInitX()][move.getInitY()] = blank;
@@ -27,7 +27,7 @@ public class GBoard{
 		}
 	}
 	
-	public boolean isLegal(playerMove move) {
+	public boolean isLegal(PlayerMove move) {
 		
 		if(!isInsideBoard(move.getInitX(), move.getInitY())){ // check if initial position is inside board.
 			return false;
@@ -110,7 +110,7 @@ public class GBoard{
         }
     }
     
-    public GBoard(GBoard original) {
+    public GBoard(GBoard original) { //copying gameboard
         this.gboard = new int[original.gboard.length][];
         for (int i = 0; i < original.gboard.length; i++) {
             this.gboard[i] = new int[original.gboard[i].length];
@@ -119,8 +119,6 @@ public class GBoard{
     }
 
     public boolean isGameOver() {
-        // Example condition: no moves left for either player
-        return actionFactory.generateAllMoves(this, white).isEmpty() && actionFactory.generateAllMoves(this, black).isEmpty();
+        return ActionFactory.generateAllMoves(this, white).isEmpty() && ActionFactory.generateAllMoves(this, black).isEmpty();
     }
-
 }
